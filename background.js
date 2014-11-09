@@ -32,11 +32,7 @@ var EmailTools = function() {
     }
     xhr.send();
   };
-    
-  that.displayEmailAddress = function(emailAddress) {
-    document.getElementById('email').innerText = emailAddress;
-  };
-  
+      
   return that;
 }();
 

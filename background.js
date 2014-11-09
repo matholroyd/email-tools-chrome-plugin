@@ -3,9 +3,9 @@ var EmailTools = function() {
   
   that.initialize = function() {
     chrome.contextMenus.create({
-      "title": "Generate Email",
-      "contexts": ["editable"],
-      "onclick": that.onclickGenerateEmail
+      title: "Generate Email",
+      contexts: ["editable"],
+      onclick: that.onclickGenerateEmail
     });
   };
 

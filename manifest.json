@@ -10,11 +10,11 @@
     "https://*/",
     "contextMenus"
   ],
-  "browser_action": {
-    "default_icon": "icon.png",
-    "default_popup": "popup.html"
-  },
   "background": {
     "scripts": ["background.js"]
-  }
+  },
+  "content_scripts": [{
+    "matches": ["http://*/", "https://*/"],
+    "js": ["content.js"]
+  }]
 }

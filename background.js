@@ -10,8 +10,13 @@ var EmailTools = function() {
   };
 
   that.onclickGenerateEmail = function(info) {
-    that.getRandomEmail(function(email) {
-      // TODO set the value of the currently acrive editable thing to 'email'
+    chrome.tabs.query({active: true, currentWindow: true}, function(tabs){
+      that.getRandomEmail(function(email) {
+        chrome.tabs.sendMessage(tabs[0].id, {
+          name: "msgGenerateEmail",
+          email: email
+        });
+      });
     });
   };
   
@@ -36,4 +41,5 @@ var EmailTools = function() {
 }();
 
 EmailTools.initialize();
+
 

@@ -1,0 +1,16 @@
+{
+  "manifest_version": 2,
+
+  "name": "Random Mail",
+  "description": "Create random email addresses so you don't have to give out your personal email address.",
+  "version": "1.0",
+
+  "permissions": [
+    "http://*/",
+    "https://*/"
+  ],
+  "browser_action": {
+    "default_icon": "icon.png",
+    "default_popup": "popup.html"
+  }
+}

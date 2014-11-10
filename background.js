@@ -9,6 +9,31 @@ var EmailTools = function() {
       contexts: ["editable"],
       onclick: that.onclickGenerateEmail
     });
+
+    chrome.storage.sync.get({
+      api_key: null
+    }, function(items) {
+      if(items.api_key === null || items.api_key === undefined) {
+        that.createNewAccount();
+      }
+    });
+  };
+  
+  that.createNewAccount = function() {
+    var url = host + "/create-new-account",
+        xhr = new XMLHttpRequest();
+    
+    xhr.open("GET", url, true);
+    xhr.onreadystatechange = function() {
+      if(xhr.readyState === READYSTATE_DONE) {
+        data = JSON.parse(xhr.responseText);
+        
+        chrome.storage.sync.set({
+          api_key: data.api_key
+        });
+      }
+    }
+    xhr.send();
   };
 
   that.onclickGenerateEmail = function(info) {

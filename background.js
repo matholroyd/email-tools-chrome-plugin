@@ -1,5 +1,7 @@
 var EmailTools = function() {
-  var that = {};
+  var that = {},
+      host = "http://localhost:8000",
+      READYSTATE_DONE = 4;
   
   that.initialize = function() {
     chrome.contextMenus.create({
@@ -22,12 +24,14 @@ var EmailTools = function() {
   
   
   that.getRandomEmail = function(callback) {
-    var url = "http://localhost:8000/email",
+    var url = host + "/email",
         xhr = new XMLHttpRequest();
     
     xhr.open("GET", url, true);
     xhr.onreadystatechange = function() {
-      callback(xhr.responseText);
+      if(xhr.readyState === READYSTATE_DONE) {
+        callback(xhr.responseText);
+      }
     }
     xhr.send();
   };

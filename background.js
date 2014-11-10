@@ -22,13 +22,12 @@ var EmailTools = function() {
   
   
   that.getRandomEmail = function(callback) {
-    var url = "http://www.google.com",
+    var url = "http://localhost:8000/email",
         xhr = new XMLHttpRequest();
     
     xhr.open("GET", url, true);
     xhr.onreadystatechange = function() {
-      // Replace this with the actual xhr response once API built
-      callback("some-random-email@tworgy.com");
+      callback(xhr.responseText);
     }
     xhr.send();
   };

@@ -57,4 +57,9 @@
 
   document.addEventListener('DOMContentLoaded', that.restore_options);
   document.getElementById('save').addEventListener('click', that.save_options);
+  
+  chrome.storage.onChanged.addListener(function(changes, areaName) {
+    that.updateSettings(changes);
+  });
+  
 })();

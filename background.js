@@ -1,7 +1,8 @@
 var EmailTools = function() {
   var that = {},
       host = "http://localhost:8000",
-      READYSTATE_DONE = 4;
+      READYSTATE_DONE = 4,
+      config = null;
   
   that.initialize = function() {
     chrome.contextMenus.create({
@@ -17,7 +18,41 @@ var EmailTools = function() {
         that.createNewAccount();
       }
     });
+    
+    chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
+      if(message.name === "msgOptionsSaved") {
+        that.saveSettingsTosServer();
+      } else {
+        console.log("Unexpected message!\n" + message);
+      }
+      
+    });
+    
   };
+  
+  that.saveSettingsTosServer = function() {
+    chrome.storage.sync.get({
+      api_key: null,
+      username: null,
+      email: null
+    }, function(settings) {
+      if(settings.api_key !== null && settings.api_key !== undefined) {
+        var url = host + "/api/" + settings.api_key + "/settings",
+            xhr = new XMLHttpRequest();
+    
+        xhr.open("PUT", url, true);
+        xhr.send(JSON.stringify(settings));
+      }
+    });
+  };
+   
+  // that.loadSettings = function() {
+  //   chrome.storage.sync.get({
+  //     api_key: null
+  //   }, function(items) {
+  //     config = items;
+  //   });
+  // };
   
   that.createNewAccount = function() {
     var url = host + "/create-new-account",
@@ -49,16 +84,22 @@ var EmailTools = function() {
   
   
   that.getRandomEmail = function(callback) {
-    var url = host + "/email",
-        xhr = new XMLHttpRequest();
+    chrome.storage.sync.get({
+      api_key: null
+    }, function(settings) {
+      if(settings.api_key !== null && settings.api_key !== undefined) {
+        var url = host + "/api/" + settings.api_key + "/generate-email",
+            xhr = new XMLHttpRequest();
     
-    xhr.open("GET", url, true);
-    xhr.onreadystatechange = function() {
-      if(xhr.readyState === READYSTATE_DONE) {
-        callback(xhr.responseText);
+        xhr.open("GET", url, true);
+        xhr.onreadystatechange = function() {
+          if(xhr.readyState === READYSTATE_DONE) {
+            callback(xhr.responseText);
+          }
+        }
+        xhr.send();
       }
-    }
-    xhr.send();
+    });
   };
       
   return that;

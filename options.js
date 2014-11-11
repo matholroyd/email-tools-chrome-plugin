@@ -2,15 +2,19 @@
   that = {};
   
   that.save_options = function() {
-    var items = {
+    var settings = {
       username: document.getElementById('input_username').value,
       email: document.getElementById('input_email').value
     };
 
-    console.log("items saved are =>");
-    console.log(items);
+    console.log("settings saved are =>");
+    console.log(settings);
 
-    chrome.storage.sync.set(items);
+    chrome.storage.sync.set(settings);
+    chrome.runtime.sendMessage({
+      name: "msgOptionsSaved",
+      settings: settings
+    });
   };
 
   // Restores select box and checkbox state using the preferences

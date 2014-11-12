@@ -1,5 +1,4 @@
 (function() {
-
   chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
     if(message.name === "msgGenerateEmail") {
       // TODO should check the editable thing is actually something would want 

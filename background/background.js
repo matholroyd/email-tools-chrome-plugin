@@ -1,5 +1,5 @@
 (function() {
-  var host = "http://localhost:8000",
+  var HOST = "http://localhost:8000",
       READYSTATE_DONE = 4;
 
   function Background() {
@@ -33,7 +33,7 @@
         email: null
       }, function(settings) {
         if(settings.api_key !== null && settings.api_key !== undefined) {
-          var url = host + "/api/" + settings.api_key + "/settings",
+          var url = HOST + "/api/" + settings.api_key + "/settings",
               xhr = new XMLHttpRequest();
 
           xhr.open("PUT", url, true);
@@ -42,7 +42,7 @@
       });
     },
     createNewAccount: function() {
-      var url = host + "/create-new-account",
+      var url = HOST + "/create-new-account",
           xhr = new XMLHttpRequest();
 
       xhr.open("GET", url, true);
@@ -72,7 +72,7 @@
         api_key: null
       }, function(settings) {
         if(settings.api_key !== null && settings.api_key !== undefined) {
-          var url = host + "/api/" + settings.api_key + "/generate-email",
+          var url = HOST + "/api/" + settings.api_key + "/generate-email",
               xhr = new XMLHttpRequest();
 
           xhr.open("GET", url, true);

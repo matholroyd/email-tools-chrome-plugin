@@ -18,5 +18,5 @@
     "matches": ["http://*/", "https://*/"],
     "js": ["content.js"]
   }],
-  "options_page": "options.html"
+  "options_page": "options/options.html"
 }

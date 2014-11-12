@@ -2,7 +2,8 @@ var EmailTools = function() {
   var that = {},
       host = "http://localhost:8000",
       READYSTATE_DONE = 4,
-      config = null;
+      config = null,
+      isConfigured = false;
   
   that.initialize = function() {
     chrome.contextMenus.create({
@@ -12,7 +13,9 @@ var EmailTools = function() {
     });
 
     chrome.storage.sync.get({
-      api_key: null
+      api_key: undefined,
+      username: undefined,
+      email: undefined
     }, function(items) {
       if(items.api_key === null || items.api_key === undefined) {
         that.createNewAccount();

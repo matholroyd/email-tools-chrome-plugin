@@ -12,7 +12,7 @@
     "storage"
   ],
   "background": {
-    "scripts": ["background.js"]
+    "scripts": ["background/background.js"]
   },
   "content_scripts": [{
     "matches": ["http://*/", "https://*/"],

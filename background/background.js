@@ -1,17 +1,23 @@
-(function() {
+define(['/js/settings.js', '/js/server.js'], function (Settings, Server) {
   var HOST = "http://localhost:8000",
       READYSTATE_DONE = 4;
+      
 
   function Background() {
+    this.api_key = null;
+    this.server = null;
+
     chrome.contextMenus.create({
       title: "Generate Email",
       contexts: ["editable"],
-      onclick: this.onclickGenerateEmail
+      onclick: this.onclickGenerateEmail.bind(this)
     });
-
+    
     chrome.storage.sync.get(function(items) {
       if(items.api_key === null || items.api_key === undefined) {
         this.createNewAccount();
+      } else {
+        this.api_key = items.api_key;
       }
     });
 
@@ -21,11 +27,17 @@
       } else {
         console.log("Unexpected message!\n" + message);
       }
-  
     });
   }
 
   Background.prototype = {
+    getServer: function() {
+      if(this.server === null) {
+        this.server = new Server(this.api_key);
+      };
+      
+      return this.server;
+    },
     saveSettingsTosServer: function() {
       chrome.storage.sync.get({
         api_key: null,
@@ -49,6 +61,7 @@
       xhr.onreadystatechange = function() {
         if(xhr.readyState === READYSTATE_DONE) {
           data = JSON.parse(xhr.responseText);
+          this.api_key = data.api_key;
     
           chrome.storage.sync.set({
             api_key: data.api_key
@@ -58,34 +71,18 @@
       xhr.send();
     },
     onclickGenerateEmail: function(info) {
-      chrome.tabs.query({active: true, currentWindow: true}, function(tabs){
-        Background.prototype.getRandomEmail(function(email) {
+      var that = this;
+      
+      chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+        that.getServer().getRandomEmail(function(email) {
           chrome.tabs.sendMessage(tabs[0].id, {
             name: "msgGenerateEmail",
             email: email
           });
         });
       });
-    },
-    getRandomEmail: function(callback) {
-      chrome.storage.sync.get({
-        api_key: null
-      }, function(settings) {
-        if(settings.api_key !== null && settings.api_key !== undefined) {
-          var url = HOST + "/api/" + settings.api_key + "/generate-email",
-              xhr = new XMLHttpRequest();
-
-          xhr.open("GET", url, true);
-          xhr.onreadystatechange = function() {
-            if(xhr.readyState === READYSTATE_DONE) {
-              callback(xhr.responseText);
-            }
-          }
-          xhr.send();
-        }
-      });
     }
   };
 
   new Background();
-})();
+});

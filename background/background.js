@@ -78,10 +78,10 @@ define(['/js/settings.js', '/js/server.js'], function (Settings, Server) {
       var that = this;
       
       chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-        that.getServer().getRandomEmail(function(email) {
+        that.getServer().getRandomEmail(function(json_data) {
           chrome.tabs.sendMessage(tabs[0].id, {
             name: "msgGenerateEmail",
-            email: email
+            data: JSON.parse(json_data)
           });
         });
       });

@@ -28,16 +28,22 @@
   };
     
   that.updateSettings = function(settings) {
-    if(settings.username !== null && settings.username !== undefined) {
-      document.getElementById('input_username').value = settings.username;
-    }
-    
-    if(settings.email !== null && settings.email !== undefined) {
+    if(typeof settings.email === "string") {
       document.getElementById('input_email').value = settings.email;
+    } else {
+      document.getElementById('input_email').value = "";
     }
     
-    if(settings.api_key !== undefined && settings.api_key !== null) {
+    if(typeof settings.username === "string") {
+      document.getElementById('input_username').value = settings.username;
+    } else {
+      document.getElementById('input_username').value = "";
+    }
+    
+    if(typeof settings.api_key === "string") {
       document.getElementById('output_api_key').innerText = settings.api_key;
+    } else {
+      document.getElementById('output_api_key').innerText = "-- not set --"
     }
     
     that.showGeneratedEmail(settings.username);
@@ -53,17 +59,25 @@
     jQuery('.update-username').html(username);
   };
   
+  that.resetAccount = function() {
+    chrome.runtime.sendMessage({
+      name: "msgResetAccount"
+    });
+    
+  };
   
   jQuery('input#input_username').keyup(function() {
     that.showGeneratedEmail(jQuery(this).val());
+  });
+  
+  jQuery('button#reset-account').click(function() {
+    that.resetAccount();
   });
   
 
   document.addEventListener('DOMContentLoaded', that.restore_options);
   document.getElementById('save').addEventListener('click', that.save_options);
   
-  chrome.storage.onChanged.addListener(function(changes, areaName) {
-    that.updateSettings(changes);
-  });
+  chrome.storage.onChanged.addListener(that.restore_options);
   
 })();

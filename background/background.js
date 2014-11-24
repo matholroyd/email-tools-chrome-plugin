@@ -1,12 +1,13 @@
 define(['/js/settings.js', '/js/server.js'], function (Settings, Server) {
   var HOST = "http://localhost:8000",
       READYSTATE_DONE = 4;
-      
 
   function Background() {
+    var that = this;
+
     this.api_key = null;
     this.server = null;
-
+    
     chrome.contextMenus.create({
       title: "Generate Email",
       contexts: ["editable"],
@@ -23,11 +24,14 @@ define(['/js/settings.js', '/js/server.js'], function (Settings, Server) {
 
     chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
       if(message.name === "msgOptionsSaved") {
-        this.saveSettingsTosServer();
+        that.saveSettingsTosServer();
+      } else if(message.name === "msgResetAccount") {
+        that.resetAccount();
       } else {
         console.log("Unexpected message!\n" + message);
       }
     });
+    
   }
 
   Background.prototype = {
@@ -81,6 +85,13 @@ define(['/js/settings.js', '/js/server.js'], function (Settings, Server) {
           });
         });
       });
+    },
+    resetAccount: function() {
+      chrome.storage.sync.set({
+        api_key: null,
+        username: null,
+        email: null
+      }, this.createNewAccount);
     }
   };
 
